@@ -12,7 +12,7 @@
 
     php artisan serve
 
-    Docker Commands :
+    **Docker Commands :**
 
     docker build -t laravel_app .
 
