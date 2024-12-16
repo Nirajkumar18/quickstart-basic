@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laravel-app
+  labels:
+    app: laravel-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: laravel-app
+  template:
+    metadata:
+      labels:
+        app: laravel-app
+    spec:
+      containers:
+      - name: laravel-app
+        image: 640168452292.dkr.ecr.us-east-1.amazonaws.com/laravel_app:latest  # Replace with your ECR image URL
+        ports:
+        - containerPort: 8000
+        env:
+        - name: APP_ENV
+          value: "production"
+        - name: DB_HOST
+          value: "your-database-hostname"    # Replace with your RDS database endpoint
+        - name: DB_DATABASE
+          value: "laravel-db"
+        - name: DB_USERNAME
+          value: "admin"
+        - name: DB_PASSWORD
+          value: "your-db-password"
+      imagePullSecrets:
+      - name: ecr-secret    # Secret to authenticate with ECR
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: laravel-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8000
+  selector:
+    app: laravel-app
